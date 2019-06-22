@@ -1,24 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import { Button } from "react-bulma-components";
+
+import useFetchCharacters from './hooks/useFetchCharacters';
+import Character from './Character';
+
 import './App.css';
 
-function App() {
+const App = () => {
+  const [page, setPage] = useState(1);
+  const [loading, characters] = useFetchCharacters(page);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <div>Page #{page}</div>
+      <div>
+        <Button color="info" onClick={() => setPage(Math.max(1, page - 1))}>
+          Previous Page
+        </Button>
+        <Button color="info" onClick={() => setPage(page + 1)}>
+          Next Page
+        </Button>
+      </div>
+      {loading && <div>Loading...</div>}
+      <div className="App-characters">
+        {!loading && characters.map((character) => (
+          <Character key={character.id} data={character} />
+        ))}
+      </div>
     </div>
   );
 }
